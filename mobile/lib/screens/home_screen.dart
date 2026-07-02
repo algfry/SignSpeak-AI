@@ -1,98 +1,89 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_header.dart';
+import '../widgets/mic_button.dart';
+import '../widgets/speech_card.dart';
+import '../widgets/translation_card.dart';
+import '../widgets/animation_placeholder.dart';
+import '../widgets/status_bar.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String speechText = "Hasil suara akan muncul di sini";
+  String translationText = "Hasil AI akan muncul di sini";
+  String status = "Idle";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("SignSpeak AI"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
+      backgroundColor: const Color(0xffF5F7FA),
 
-            const Text(
-              "Breaking Communication Barriers",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+
+              const AppHeader(),
+
+              const SizedBox(height: 30),
+
+              MicButton(
+                onPressed: () {
+                  setState(() {
+                    status = "Listening...";
+                    speechText = "Selamat pagi";
+                    translationText = "Good Morning";
+                  });
+                },
               ),
-            ),
 
-            const SizedBox(height: 40),
+              const SizedBox(height: 20),
 
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.mic),
-              label: const Text("Tap to Speak"),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 60),
-              ),
-            ),
+              if (status == "Listening...")
+                const CircularProgressIndicator(),
 
-            const SizedBox(height: 30),
+              const SizedBox(height: 20),
 
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Speech",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text("Hasil suara akan muncul di sini"),
-                  ],
-                ),
-              ),
-            ),
+              SpeechCard(text: speechText),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Translation",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 8),
-                    Text("Hasil AI akan muncul di sini"),
-                  ],
-                ),
-              ),
-            ),
+              TranslationCard(text: translationText),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            const Expanded(
-              child: Center(
-                child: Icon(
-                  Icons.sign_language,
-                  size: 100,
-                  color: Colors.indigo,
-                ),
-              ),
-            ),
+              const AnimationPlaceholder(),
 
-            const Text(
-              "Status : Idle",
-              textAlign: TextAlign.center,
-            ),
-          ],
+              const SizedBox(height: 20),
+
+              StatusBar(status: status),
+            ],
+          ),
         ),
+      ),
+
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: 0,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.history),
+            label: "History",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings),
+            label: "Settings",
+          ),
+        ],
       ),
     );
   }

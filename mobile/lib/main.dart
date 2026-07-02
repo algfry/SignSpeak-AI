@@ -22,4 +22,4 @@ class SignSpeakApp extends StatelessWidget {
       home: const HomeScreen(),
     );
   }
-} 
+}
