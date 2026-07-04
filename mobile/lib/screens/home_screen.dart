@@ -5,6 +5,8 @@ import '../widgets/speech_card.dart';
 import '../widgets/translation_card.dart';
 import '../widgets/animation_placeholder.dart';
 import '../widgets/status_bar.dart';
+import '../services/audio_services.dart';
+import 'history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,9 +16,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String speechText = "Hasil suara akan muncul di sini";
-  String translationText = "Hasil AI akan muncul di sini";
+  String speechText = "hasil suara akan muncul di sini";
+  String translationText = "hasil AI akan muncul di sini";
   String status = "Idle";
+  bool isRecording = false;
+  int currentIndex = 0;
+  final AudioService _audioService = AudioService();
+
+  String? audioPath;
+
+  Future<void> toggleRecording() async {
+    if (!isRecording) {
+      await _audioService.startRecording();
+
+      setState(() {
+        isRecording = true;
+        status = "Recording...";
+      });
+    } else {
+      audioPath = await _audioService.stopRecording();
+
+      setState(() {
+        isRecording = false;
+        status = "Recording selesai";
+        speechText = audioPath ?? "Audio tidak ditemukan";
+      });
+
+      print(audioPath);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 30),
 
               MicButton(
-                onPressed: () {
-                  setState(() {
-                    status = "Listening...";
-                    speechText = "Selamat pagi";
-                    translationText = "Good Morning";
-                  });
-                },
+                isRecording: isRecording,
+                onPressed: toggleRecording, 
               ),
 
               const SizedBox(height: 20),
@@ -69,8 +92,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
 
       bottomNavigationBar: NavigationBar(
-        selectedIndex: 0,
-        destinations: const [
+        selectedIndex: currentIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+          currentIndex = index;
+          });
+          if (index == 1) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const HistoryScreen(),
+              ),
+           );
+          }
+        }, destinations: [
           NavigationDestination(
             icon: Icon(Icons.home),
             label: "Home",
