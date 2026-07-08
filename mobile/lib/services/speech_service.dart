@@ -1,11 +1,29 @@
+import 'package:speech_to_text/speech_to_text.dart';
+
 class SpeechService {
+  final SpeechToText _speech = SpeechToText();
 
-  Future<String> speechToText(String audioPath) async {
-    await Future.delayed(const Duration(seconds: 2));
+  Future<String> listen() async {
 
-    // nanti request ke API
+    bool available = await _speech.initialize();
 
-    return "Selamat pagi";
+    if (!available) {
+      throw Exception("Speech recognition unavailable");
+    }
+
+    String result = "";
+
+    await _speech.listen(
+      localeId: "id_ID",
+      onResult: (value) {
+        result = value.recognizedWords;
+      },
+    );
+
+    while (_speech.isListening) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+
+    return result;
   }
-
 }

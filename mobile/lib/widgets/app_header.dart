@@ -26,14 +26,6 @@ class AppHeader extends StatelessWidget {
 
         SizedBox(height: 5),
 
-        Text(
-          "SignSpeak AI Breaking Communication Barriers\nPowered by AMD AI",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
-          ),
-        ),
       ],
     );
   }

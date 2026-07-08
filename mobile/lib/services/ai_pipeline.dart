@@ -7,16 +7,25 @@ class AIPipeline {
   final FireworksService _fireworks = FireworksService();
   final SignService _sign = SignService();
 
-  Future<Map<String, String>> process(String audioPath) async {
-    final speech = await _speech.speechToText(audioPath);
-    final translation = await _fireworks.simplifySentence(speech);
-    final video = await _sign.getVideo(translation);
+  Future<Map<String, dynamic>> process() async {
+
+    // 1. Speech To Text
+    final speech = await _speech.listen();
+
+    // 2. Fireworks AI
+    final ai = await _fireworks.translate(speech);
+
+    final gestures = List<String>.from(ai["gesture"]);
+
+    final translation = ai["translation"] as String;
+  
+    // 4. Cari video gesture
+    final videos = await _sign.getVideos(gestures);
 
     return {
       "speech": speech,
       "translation": translation,
-      "video": video,
+      "videos": videos,
     };
   }
-
 }

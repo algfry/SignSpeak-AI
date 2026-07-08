@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/app_header.dart';
+import 'package:animate_do/animate_do.dart';
+
+import 'listening_screen.dart';
 import '../widgets/mic_button.dart';
-import '../widgets/speech_card.dart';
-import '../widgets/translation_card.dart';
-import '../widgets/animation_placeholder.dart';
-import '../widgets/status_bar.dart';
-import '../services/audio_services.dart';
-import 'history_screen.dart';
+import '../widgets/gradient_background.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,109 +13,97 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String speechText = "hasil suara akan muncul di sini";
-  String translationText = "hasil AI akan muncul di sini";
-  String status = "Idle";
   bool isRecording = false;
-  int currentIndex = 0;
-  final AudioService _audioService = AudioService();
-
-  String? audioPath;
-
-  Future<void> toggleRecording() async {
-    if (!isRecording) {
-      await _audioService.startRecording();
-
-      setState(() {
-        isRecording = true;
-        status = "Recording...";
-      });
-    } else {
-      audioPath = await _audioService.stopRecording();
-
-      setState(() {
-        isRecording = false;
-        status = "Recording selesai";
-        speechText = audioPath ?? "Audio tidak ditemukan";
-      });
-
-      print(audioPath);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffF5F7FA),
+      body: GradientBackground(
+        child: SafeArea(
+          child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
+                const SizedBox(height: 70),
+                
+                FadeInDown(
+                  child: const Text(
+                    "SignSpeak AI",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 38,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      letterSpacing: -0.8,
+                      shadows: [
+                        Shadow(
+                          color: Colors.white54,
+                          blurRadius: 18,
+                        ),
 
-              const AppHeader(),
+                        Shadow(
+                          color: Colors.black26,
+                          offset: Offset(0,5),
+                          blurRadius: 12,
+                        ),
 
-              const SizedBox(height: 30),
+                      ],
+                    ),
+                  ),
+                ),
 
-              MicButton(
-                isRecording: isRecording,
-                onPressed: toggleRecording, 
-              ),
+                const Spacer(),
 
-              const SizedBox(height: 20),
+                FadeInUp(
+                  delay: const Duration(milliseconds: 300),
+                  child: MicButton(
+                    isRecording: isRecording,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const ListeningScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
 
-              if (status == "Listening...")
-                const CircularProgressIndicator(),
+                const SizedBox(height: 30),
 
-              const SizedBox(height: 20),
+                FadeInUp(
+                  delay: const Duration(milliseconds: 500),
+                  child: const Text(
+                    "Press to Speak",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
 
-              SpeechCard(text: speechText),
+                const Spacer(),
 
-              const SizedBox(height: 15),
-
-              TranslationCard(text: translationText),
-
-              const SizedBox(height: 20),
-
-              const AnimationPlaceholder(),
-
-              const SizedBox(height: 20),
-
-              StatusBar(status: status),
-            ],
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 24),
+                  child: Text(
+                    "Powered by AMD AI",
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
+          ), 
         ),
-      ),
-
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-          currentIndex = index;
-          });
-          if (index == 1) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const HistoryScreen(),
-              ),
-           );
-          }
-        }, destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.history),
-            label: "History",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
       ),
     );
   }
