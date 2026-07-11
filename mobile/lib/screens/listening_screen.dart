@@ -18,33 +18,48 @@ class _ListeningScreenState extends State<ListeningScreen> {
   @override
   void initState() {
     super.initState();
-    runPipeline();
-  }
+
+      Future.delayed(
+      const Duration(milliseconds: 700),
+      () {
+        runPipeline();
+      },
+    );
+  } 
 
   Future<void> runPipeline() async {
     try {
+      print("=== STEP 1 ===");
+
       final pipeline = AIPipeline();
+
+      print("=== STEP 2 ===");
 
       final result = await pipeline.process();
 
+      print("=== STEP 3 ===");
+      print(result);
+
       if (!mounted) return;
 
+      print(result);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => TranslationScreen(
-            speech: result["speech"]!,
-            translation: result["translation"]!,
-            videoPath: result["video"]!,
-          
-            ),
+            speech: result["speech"],
+            translation: result["translation"],
+            videos: List<String>.from(result["videos"]),
           ),
-        );
-      } catch (e) {
+        ),
+      );
 
-        print("Error");
-        print(e);
+      print("=== STEP 4 ===");
 
+    } catch (e, s) {
+      print("ERROR:");
+      print(e);
+      print(s);
     }
   }
 

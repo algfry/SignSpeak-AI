@@ -15,16 +15,18 @@ class AIPipeline {
     // 2. Fireworks AI
     final ai = await _fireworks.translate(speech);
 
-    final gestures = List<String>.from(ai["gesture"]);
+    final gestures = _sign.mergeGestures(
+      List<String>.from(ai["gesture"]),
+    );
 
     final translation = ai["translation"] as String;
-  
+
     // 4. Cari video gesture
     final videos = await _sign.getVideos(gestures);
 
     return {
       "speech": speech,
-      "translation": translation,
+      "translation": ai["translation"],
       "videos": videos,
     };
   }

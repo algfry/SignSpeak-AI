@@ -14,67 +14,78 @@ class ResultPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
         filter: ImageFilter.blur(
           sigmaX: 15,
           sigmaY: 15,
         ),
         child: Container(
-          padding: const EdgeInsets.all(22),
-
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 13,
+          ),
           decoration: BoxDecoration(
             color: Colors.white.withValues(alpha: .15),
-
-            borderRadius: BorderRadius.circular(22),
-
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: Colors.white24,
             ),
           ),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
 
               const Text(
                 "Speech",
                 style: TextStyle(
                   color: Colors.white70,
+                  fontSize: 13,
                 ),
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
 
               Text(
                 speech,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
-              const Divider(
+              const SizedBox(height: 12),
+
+              Container(
+                height: 1,
                 color: Colors.white24,
-                height: 30,
               ),
+
+              const SizedBox(height: 12),
 
               const Text(
                 "Translation",
                 style: TextStyle(
                   color: Colors.white70,
+                  fontSize: 13,
                 ),
               ),
 
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
 
               Text(
                 translation,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  height: 1.3,
                 ),
               ),
             ],
